@@ -1,0 +1,7 @@
+alfa = point ( 5 , 1 ) ;
+beta = point ( 8 , 1 ) ;
+gamma = point  ( 8 , 4 ) ;
+delta = point ( 5 , 4 ) ;
+test ( triangle , alfa , beta , gamma ) ;
+test ( triangle , alfa , beta , delta ) ;
+test ( square , alfa , beta , gamma , delta ) .

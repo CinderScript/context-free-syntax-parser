@@ -1,0 +1,4 @@
+alfa=point(12,33);
+bet@=point (8,11) ;
+gamma=point(1,4) ;
+test(triangle, alfa, bet@, gamma).

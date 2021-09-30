@@ -1,0 +1,6 @@
+ichi=point(2,3);
+ni=point(4,1);
+san=point(1,2)
+si=point(0,0);
+test(triangle,ichi,ni,san);
+test(square,ichi,ni,san,si).
