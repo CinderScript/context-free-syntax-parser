@@ -22,6 +22,8 @@ func main() {
 		os.Exit(2)
 	}
 
+	var tokens []TokenLexeme // list of each token/lexeme pair found in the file
+
 	regexId, _ := regexp.Compile(`^[a-zA-Z]+`)
 	regexNum, _ := regexp.Compile(`^\d+`)
 
@@ -31,7 +33,6 @@ func main() {
 	scanner.Split(bufio.ScanWords)
 	for scanner.Scan() {
 		line := scanner.Text()
-		fmt.Println(line)
 
 		matchEndPosition := 0
 
@@ -44,17 +45,29 @@ func main() {
 			// CHECK  FOR A SPECIAL CHAR
 			switch firstChar {
 			case ';':
-				fmt.Println("fount a ;")
+				t := TokenLexeme{Semicolon, string(firstChar)}
+				tokens = append(tokens, t)
+
 			case ',':
-				fmt.Println("fount a ,")
+				t := TokenLexeme{Comma, string(firstChar)}
+				tokens = append(tokens, t)
+
 			case '.':
-				fmt.Println("fount a .")
+				t := TokenLexeme{Period, string(firstChar)}
+				tokens = append(tokens, t)
+
 			case '(':
-				fmt.Println("fount a (")
+				t := TokenLexeme{LParen, string(firstChar)}
+				tokens = append(tokens, t)
+
 			case ')':
-				fmt.Println("fount a )")
+				t := TokenLexeme{RParen, string(firstChar)}
+				tokens = append(tokens, t)
+
 			case '=':
-				fmt.Println("fount a =")
+				t := TokenLexeme{Assign, string(firstChar)}
+				tokens = append(tokens, t)
+
 			default:
 				isSingleChar = false
 			}
@@ -66,20 +79,24 @@ func main() {
 				switch 0 {
 
 				case strings.Index(line, "point"):
-					fmt.Println("Found point")
 					matchEndPosition = 5 // point has 5 letters
+					t := TokenLexeme{Point, line[:matchEndPosition]}
+					tokens = append(tokens, t)
 
 				case strings.Index(line, "triangle"):
-					fmt.Println("Found triangle")
 					matchEndPosition = 8
+					t := TokenLexeme{Triangle, line[:matchEndPosition]}
+					tokens = append(tokens, t)
 
 				case strings.Index(line, "square"):
-					fmt.Println("Found square")
 					matchEndPosition = 6
+					t := TokenLexeme{Square, line[:matchEndPosition]}
+					tokens = append(tokens, t)
 
 				case strings.Index(line, "test"):
-					fmt.Println("Found test")
 					matchEndPosition = 4
+					t := TokenLexeme{Test, line[:matchEndPosition]}
+					tokens = append(tokens, t)
 
 				default:
 					isKeyword = false
@@ -92,13 +109,16 @@ func main() {
 					if regexId.MatchString(line) {
 						matchLocation := regexId.FindStringIndex(line)
 						matchEndPosition = matchLocation[1] // finds last position of the match
-						fmt.Println("Found user made ID: ", line[:matchEndPosition])
+
+						t := TokenLexeme{Id, line[:matchEndPosition]}
+						tokens = append(tokens, t)
 
 					} else if regexNum.MatchString(line) {
 						matchLocation := regexNum.FindStringIndex(line)
 						matchEndPosition = matchLocation[1] // finds last position of the match
-						fmt.Println("Found user made NUMBER: ", line[:matchEndPosition])
 
+						t := TokenLexeme{Num, line[:matchEndPosition]}
+						tokens = append(tokens, t)
 					} else {
 						isIdOrNum = false
 					}
@@ -123,7 +143,41 @@ func main() {
 
 	}
 
-	fmt.Println()
-	fmt.Println("Done.")
+	for _, t := range tokens {
+		if t.token == Id || t.token == Num {
+			fmt.Println(TokenCatagoryToString(t.token), t.lexeme)
+		} else {
+			fmt.Println(TokenCatagoryToString(t.token))
+		}
+	}
+}
 
+type TokenCatagory int
+
+const (
+	Point TokenCatagory = iota
+	Id
+	Num
+	Semicolon
+	Comma
+	Period
+	LParen
+	RParen
+	Assign
+	Triangle
+	Square
+	Test
+)
+
+func TokenCatagoryToString(n TokenCatagory) string {
+	tokenNames := []string{
+		"POINT", "ID", "NUM", "SEMICOLON", "COMMA",
+		"PERIOD", "LPAREN", "RPAREN", "ASSIGN",
+		"TRIANGLE", "SQUARE", "TEST"}
+	return tokenNames[n]
+}
+
+type TokenLexeme struct {
+	token  TokenCatagory
+	lexeme string
 }
