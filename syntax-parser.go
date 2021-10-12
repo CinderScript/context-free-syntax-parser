@@ -44,3 +44,5 @@ func GetGrammarRules() map[GrammarSymbols][]SymbolDefinition {
 
 	return grammarRules
 }
+
+func ParseSyntax()
