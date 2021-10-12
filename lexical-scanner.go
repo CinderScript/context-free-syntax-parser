@@ -27,13 +27,14 @@ const (
 	STMT_LIST  GrammarSymbols = "STMT_LIST"
 	STMT       GrammarSymbols = "STMT"
 	POINT_DEF  GrammarSymbols = "POINT_DEF"
+	TEST_POINT GrammarSymbols = "TEST_POINT"
 	OPTION     GrammarSymbols = "OPTION"
 	POINT_LIST GrammarSymbols = "POINT_LIST"
 	LETTER     GrammarSymbols = "LETTER"
 	DIGIT      GrammarSymbols = "DIGIT"
 )
 
-// STRUCT FOR SAVING THE GRAMMER TOKEN AND LEXEME PAIR
+// Struct for saving the grammer token and lexeme pair
 type TokenLexemePair struct {
 	token  GrammarSymbols
 	lexeme string

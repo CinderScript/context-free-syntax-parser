@@ -14,7 +14,6 @@ func main() {
 	if error != nil {
 		msg := "Could not open the file: " + os.Args[1] +
 			"\n" + "\"" + error.Error() + "\""
-
 		panic(msg)
 	}
 
@@ -24,14 +23,11 @@ func main() {
 		os.Exit(3)
 	}
 
-	// MAP REPRESENTING THE GRAMMAR RULE DEFINITIONS
-	grammarDefs := make(map[GrammarSymbols][]GrammarSymbols)
-	grammarDefs[STMT_LIST] = []GrammarSymbols{STMT}
+	rules := GetGrammarRules()
 
-	_ = grammarDefs
-	_ = tokensLexemePairs
-
-	//WriteLine(grammarDefs[STMT_LIST])
+	for k, v := range rules {
+		fmt.Printf("key[%s] value[%s]\n", k, v)
+	}
 
 	for _, t := range tokensLexemePairs {
 		if t.token == ID || t.token == NUM {
@@ -40,8 +36,4 @@ func main() {
 			fmt.Println(t.token)
 		}
 	}
-}
-
-func WriteLine(s string) {
-	fmt.Println(s)
 }
