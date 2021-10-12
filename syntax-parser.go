@@ -1,11 +1,5 @@
 package main
 
-// SymbolDefinition is a list of GrammarSymbols that make up
-// a parent Symbol (non-terminal symbol)
-type SymbolDefinition struct {
-	definition []GrammarSymbols
-}
-
 func GetGrammarRules() map[GrammarSymbols][]SymbolDefinition {
 	// MAP REPRESENTING THE GRAMMAR RULE DEFINITIONS
 	// Each KEY is a GrammarSymbol.
