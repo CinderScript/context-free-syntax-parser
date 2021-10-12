@@ -26,6 +26,5 @@ func main() {
 
 	rules := GetGrammarRules()
 
-	terminals := ParseSyntax(tokensLexemePairs, rules)
-	_ = terminals
+	ParseSyntax(tokensLexemePairs, rules, START)
 }
