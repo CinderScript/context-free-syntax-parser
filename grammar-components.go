@@ -18,6 +18,7 @@ const (
 	TRIANGLE   GrammarSymbol = "TRIANGLE"
 	SQUARE     GrammarSymbol = "SQUARE"
 	TEST       GrammarSymbol = "TEST"
+	START      GrammarSymbol = "START"
 	STMT_LIST  GrammarSymbol = "STMT_LIST"
 	STMT       GrammarSymbol = "STMT"
 	POINT_DEF  GrammarSymbol = "POINT_DEF"
@@ -37,7 +38,7 @@ type TokenLexemePair struct {
 // SymbolDefinition is a list of GrammarSymbols that make up
 // a parent Symbol (non-terminal symbol)
 type SymbolDefinition struct {
-	definition string
+	Symbols []GrammarSymbol
 }
 
 // GetGrammarRules generates and returns a map of the grammar's
@@ -50,31 +51,32 @@ func GetGrammarRules() map[GrammarSymbol][]SymbolDefinition {
 
 	// define STMT_LIST (2 defs)
 	grammarRules[STMT_LIST] = []SymbolDefinition{
-		{GetDefinitionString(STMT, PERIOD)},
-		{GetDefinitionString(STMT, SEMICOLON, STMT_LIST)}}
+		{[]GrammarSymbol{STMT}},
+		{[]GrammarSymbol{STMT, PERIOD}},
+		{[]GrammarSymbol{STMT, SEMICOLON, STMT_LIST}}}
 
 	// define STMT (2 defs)
 	grammarRules[STMT] = []SymbolDefinition{
-		{GetDefinitionString(POINT_DEF)},
-		{GetDefinitionString(TEST_POINT)}}
+		{[]GrammarSymbol{POINT_DEF}},
+		{[]GrammarSymbol{TEST_POINT}}}
 
 	// define POINT_DEF (1 def)
 	grammarRules[POINT_DEF] = []SymbolDefinition{
-		{GetDefinitionString(ID, ASSIGN, POINT, LPAREN, NUM, COMMA, RPAREN)}}
+		{[]GrammarSymbol{ID, ASSIGN, POINT, LPAREN, NUM, COMMA, RPAREN}}}
 
 	// define TEST_POINT (1 def)
 	grammarRules[TEST_POINT] = []SymbolDefinition{
-		{GetDefinitionString(TEST, LPAREN, OPTION, COMMA, POINT_LIST, RPAREN)}}
+		{[]GrammarSymbol{TEST, LPAREN, OPTION, COMMA, POINT_LIST, RPAREN}}}
 
 	// define OPTION (2 def)
 	grammarRules[OPTION] = []SymbolDefinition{
-		{GetDefinitionString(TRIANGLE)},
-		{GetDefinitionString(SQUARE)}}
+		{[]GrammarSymbol{TRIANGLE}},
+		{[]GrammarSymbol{SQUARE}}}
 
 	// define POINT_LIST (2 def)
 	grammarRules[POINT_LIST] = []SymbolDefinition{
-		{GetDefinitionString(ID)},
-		{GetDefinitionString(ID, COMMA, POINT_LIST)}}
+		{[]GrammarSymbol{ID}},
+		{[]GrammarSymbol{ID, COMMA, POINT_LIST}}}
 
 	//don't need to define NUM or ID - those are found by the lexical scanner
 	return grammarRules
