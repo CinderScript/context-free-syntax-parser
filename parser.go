@@ -25,16 +25,23 @@ func main() {
 	}
 
 	// MAP REPRESENTING THE GRAMMAR RULE DEFINITIONS
-	var grammarDefs map[GrammarSymbols]string
-	grammarDefs[STMT_LIST] = ";"
+	grammarDefs := make(map[GrammarSymbols][]GrammarSymbols)
+	grammarDefs[STMT_LIST] = []GrammarSymbols{STMT}
 
 	_ = grammarDefs
+	_ = tokensLexemePairs
+
+	//WriteLine(grammarDefs[STMT_LIST])
 
 	for _, t := range tokensLexemePairs {
-		if t.token == Id || t.token == Num {
-			fmt.Println(TokenCatagoryToString(t.token), t.lexeme)
+		if t.token == ID || t.token == NUM {
+			fmt.Println(t.token, t.lexeme)
 		} else {
-			fmt.Println(TokenCatagoryToString(t.token))
+			fmt.Println(t.token)
 		}
 	}
+}
+
+func WriteLine(s string) {
+	fmt.Println(s)
 }

@@ -9,48 +9,33 @@ import (
 )
 
 // DEFINES THE POSSIBLE TOKENS OF THE LANGUAGE'S GRAMMAR
-type TokenCatagory int
+type GrammarSymbols string
 
 const (
-	Point TokenCatagory = iota
-	Id
-	Num
-	Semicolon
-	Comma
-	Period
-	LParen
-	RParen
-	Assign
-	Triangle
-	Square
-	Test
-)
-
-func TokenCatagoryToString(n TokenCatagory) string {
-	tokenNames := []string{
-		"POINT", "ID", "NUM", "SEMICOLON", "COMMA",
-		"PERIOD", "LPAREN", "RPAREN", "ASSIGN",
-		"TRIANGLE", "SQUARE", "TEST"}
-	return tokenNames[n]
-}
-
-// DEFINES THE NON-TERMINALS FOR GRAMMAR
-type GrammarSymbols int
-
-const (
-	STMT_LIST GrammarSymbols = iota
-	STMT
-	POINT_DEF
-	TEST
-	ID
-	NUM
-	OPTION
-	POINT_LIST
+	POINT      GrammarSymbols = "POINT"
+	ID         GrammarSymbols = "ID"
+	NUM        GrammarSymbols = "NUM"
+	SEMICOLON  GrammarSymbols = "SEMICOLON"
+	COMMA      GrammarSymbols = "COMMA"
+	PERIOD     GrammarSymbols = "PERIOD"
+	LPAREN     GrammarSymbols = "LPAREN"
+	RPAREN     GrammarSymbols = "RPAREN"
+	ASSIGN     GrammarSymbols = "ASSIGN"
+	TRIANGLE   GrammarSymbols = "TRIANGLE"
+	SQUARE     GrammarSymbols = "SQUARE"
+	TEST       GrammarSymbols = "TEST"
+	STMT_LIST  GrammarSymbols = "STMT_LIST"
+	STMT       GrammarSymbols = "STMT"
+	POINT_DEF  GrammarSymbols = "POINT_DEF"
+	OPTION     GrammarSymbols = "OPTION"
+	POINT_LIST GrammarSymbols = "POINT_LIST"
+	LETTER     GrammarSymbols = "LETTER"
+	DIGIT      GrammarSymbols = "DIGIT"
 )
 
 // STRUCT FOR SAVING THE GRAMMER TOKEN AND LEXEME PAIR
 type TokenLexemePair struct {
-	token  TokenCatagory
+	token  GrammarSymbols
 	lexeme string
 }
 
@@ -81,27 +66,27 @@ func ScanFileTokens(file *os.File) ([]TokenLexemePair, error) {
 			// CHECK  FOR A SPECIAL CHAR
 			switch firstChar {
 			case ';':
-				t := TokenLexemePair{Semicolon, string(firstChar)}
+				t := TokenLexemePair{SEMICOLON, string(firstChar)}
 				tokens = append(tokens, t)
 
 			case ',':
-				t := TokenLexemePair{Comma, string(firstChar)}
+				t := TokenLexemePair{COMMA, string(firstChar)}
 				tokens = append(tokens, t)
 
 			case '.':
-				t := TokenLexemePair{Period, string(firstChar)}
+				t := TokenLexemePair{PERIOD, string(firstChar)}
 				tokens = append(tokens, t)
 
 			case '(':
-				t := TokenLexemePair{LParen, string(firstChar)}
+				t := TokenLexemePair{LPAREN, string(firstChar)}
 				tokens = append(tokens, t)
 
 			case ')':
-				t := TokenLexemePair{RParen, string(firstChar)}
+				t := TokenLexemePair{RPAREN, string(firstChar)}
 				tokens = append(tokens, t)
 
 			case '=':
-				t := TokenLexemePair{Assign, string(firstChar)}
+				t := TokenLexemePair{ASSIGN, string(firstChar)}
 				tokens = append(tokens, t)
 
 			default:
@@ -116,22 +101,22 @@ func ScanFileTokens(file *os.File) ([]TokenLexemePair, error) {
 
 				case strings.Index(line, "point"):
 					matchEndPosition = 5 // point has 5 letters
-					t := TokenLexemePair{Point, line[:matchEndPosition]}
+					t := TokenLexemePair{POINT, line[:matchEndPosition]}
 					tokens = append(tokens, t)
 
 				case strings.Index(line, "triangle"):
 					matchEndPosition = 8
-					t := TokenLexemePair{Triangle, line[:matchEndPosition]}
+					t := TokenLexemePair{TRIANGLE, line[:matchEndPosition]}
 					tokens = append(tokens, t)
 
 				case strings.Index(line, "square"):
 					matchEndPosition = 6
-					t := TokenLexemePair{Square, line[:matchEndPosition]}
+					t := TokenLexemePair{SQUARE, line[:matchEndPosition]}
 					tokens = append(tokens, t)
 
 				case strings.Index(line, "test"):
 					matchEndPosition = 4
-					t := TokenLexemePair{Test, line[:matchEndPosition]}
+					t := TokenLexemePair{TEST, line[:matchEndPosition]}
 					tokens = append(tokens, t)
 
 				default:
@@ -146,14 +131,14 @@ func ScanFileTokens(file *os.File) ([]TokenLexemePair, error) {
 						matchLocation := regexId.FindStringIndex(line)
 						matchEndPosition = matchLocation[1] // finds last position of the match
 
-						t := TokenLexemePair{Id, line[:matchEndPosition]}
+						t := TokenLexemePair{ID, line[:matchEndPosition]}
 						tokens = append(tokens, t)
 
 					} else if regexNum.MatchString(line) {
 						matchLocation := regexNum.FindStringIndex(line)
 						matchEndPosition = matchLocation[1] // finds last position of the match
 
-						t := TokenLexemePair{Num, line[:matchEndPosition]}
+						t := TokenLexemePair{NUM, line[:matchEndPosition]}
 						tokens = append(tokens, t)
 					} else {
 						isIdOrNum = false
