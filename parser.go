@@ -17,6 +17,7 @@ func main() {
 		panic(msg)
 	}
 
+	// Lexical scan of the opened file.  Saves each lexeme found and it's Token
 	tokensLexemePairs, err := ScanFileTokens(file)
 	if err != nil {
 		fmt.Println(err.Error())
@@ -25,15 +26,6 @@ func main() {
 
 	rules := GetGrammarRules()
 
-	for k, v := range rules {
-		fmt.Printf("key[%s] value[%s]\n", k, v)
-	}
-
-	for _, t := range tokensLexemePairs {
-		if t.token == ID || t.token == NUM {
-			fmt.Println(t.token, t.lexeme)
-		} else {
-			fmt.Println(t.token)
-		}
-	}
+	terminals := ParseSyntax(tokensLexemePairs, rules)
+	_ = terminals
 }
