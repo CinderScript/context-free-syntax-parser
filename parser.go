@@ -24,5 +24,6 @@ func main() {
 		os.Exit(3)
 	}
 
-	ParseTokens(tokensLexemePairs, GetGrammarRules())
+	var parser SyntaxParser
+	parser.ParseTokens(tokensLexemePairs, GetGrammarRules())
 }

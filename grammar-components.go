@@ -29,6 +29,10 @@ const (
 	DIGIT      GrammarSymbol = "DIGIT"
 )
 
+func (s GrammarSymbol) String() string {
+	return string(s)
+}
+
 // Struct for saving the grammer token and lexeme pair
 type TokenLexemePair struct {
 	token  GrammarSymbol
