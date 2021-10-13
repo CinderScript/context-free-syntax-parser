@@ -49,9 +49,12 @@ func GetGrammarRules() map[GrammarSymbol][]SymbolDefinition {
 	// Each VALUE is a list of SymbolDefinitions
 	grammarRules := make(map[GrammarSymbol][]SymbolDefinition)
 
+	// define START (1 defs)
+	grammarRules[START] = []SymbolDefinition{
+		{[]GrammarSymbol{STMT_LIST}}}
+
 	// define STMT_LIST (2 defs)
 	grammarRules[STMT_LIST] = []SymbolDefinition{
-		{[]GrammarSymbol{STMT}},
 		{[]GrammarSymbol{STMT, PERIOD}},
 		{[]GrammarSymbol{STMT, SEMICOLON, STMT_LIST}}}
 
@@ -62,7 +65,7 @@ func GetGrammarRules() map[GrammarSymbol][]SymbolDefinition {
 
 	// define POINT_DEF (1 def)
 	grammarRules[POINT_DEF] = []SymbolDefinition{
-		{[]GrammarSymbol{ID, ASSIGN, POINT, LPAREN, NUM, COMMA, RPAREN}}}
+		{[]GrammarSymbol{ID, ASSIGN, POINT, LPAREN, NUM, COMMA, NUM, RPAREN}}}
 
 	// define TEST_POINT (1 def)
 	grammarRules[TEST_POINT] = []SymbolDefinition{

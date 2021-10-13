@@ -24,7 +24,5 @@ func main() {
 		os.Exit(3)
 	}
 
-	rules := GetGrammarRules()
-
-	ParseSyntax(tokensLexemePairs, rules, START)
+	ParseTokens(tokensLexemePairs, GetGrammarRules())
 }
