@@ -21,25 +21,40 @@ import (
 
 // SyntaxParser is a struct that has a method for performing syntax analasys.
 type SyntaxParser struct {
-	rules                        map[GrammarSymbol][]SymbolDefinition
-	idTable                      map[string][]string
-	expectedToken                GrammarSymbol
-	foundToken                   GrammarSymbol
-	ranOutOfParsedSymbols        bool
-	nextID                       string
-	nextIdValues                 []string
-	currentDefinitionSymbolCount int
+
+	//contains parsed identifiers
+	PointTable map[string][]string
+	Operations []OperationStatement
+
+	// used internally by ParseTokens
+	_rules map[GrammarSymbol][]SymbolDefinition
+
+	_nextID       string
+	_nextIdValues []string
+
+	_nextOperation     string
+	_nextOperationArgs []string
+
+	_expectedToken                GrammarSymbol
+	_foundToken                   GrammarSymbol
+	_ranOutOfParsedSymbols        bool
+	_currentDefinitionSymbolCount int
+}
+
+type OperationStatement struct {
+	name      string
+	arguments []string
 }
 
 // ParseTokens takes in a slice of TokenLexemePairs and then performs a syntax analasys
 // using the given context fre grammar rules.  Returns the SyntaxParser object that has
 // data relating to the analasys, including the identifiers found and the option statements
 func (s SyntaxParser) ParseTokens(codeTokens []TokenLexemePair, rules map[GrammarSymbol][]SymbolDefinition) (SyntaxParser, error) {
-	s.rules = rules
+	s._rules = rules
 
-	s.idTable = make(map[string][]string)
-	_, _, _, err := ParseSymbols(codeTokens, START, s)
-	return s, err
+	s.PointTable = make(map[string][]string)
+	_, _, completedParser, err := ParseSymbols(codeTokens, START, s)
+	return completedParser, err
 }
 
 func ParseSymbols(parsedSymbols []TokenLexemePair,
@@ -60,7 +75,7 @@ func ParseSymbols(parsedSymbols []TokenLexemePair,
 	var currentCodeSymbol TokenLexemePair
 
 	// get each possible definition for the passed symbol
-	symbolDefinitions := parser.rules[parentSymbol]
+	symbolDefinitions := parser._rules[parentSymbol]
 
 	// for each definition
 	for defIndex, definition := range symbolDefinitions {
@@ -74,11 +89,11 @@ func ParseSymbols(parsedSymbols []TokenLexemePair,
 			// ran out of parsed symbols - find what the next token should have been
 			if defSymbolIndex >= len(parsedSymbols) {
 				// find next token in this definition
-				parser.expectedToken = parser.FindFirstToken(defSymbol)
-				parser.ranOutOfParsedSymbols = true
+				parser._expectedToken = parser.FindFirstToken(defSymbol)
+				parser._ranOutOfParsedSymbols = true
 				break // not enough symbols in code for this definition, skip
 			}
-			parser.ranOutOfParsedSymbols = false
+			parser._ranOutOfParsedSymbols = false
 
 			// if the definition symbol doesn't match with the parsed code - try to drill down
 			currentCodeSymbol = parsedSymbols[defSymbolIndex]
@@ -91,7 +106,7 @@ func ParseSymbols(parsedSymbols []TokenLexemePair,
 			if defSymbol != currentCodeSymbol.token {
 
 				// if definition symbol is non-terminal, drill down / try to find a symbol match in definition
-				_, isNonTerminal := parser.rules[defSymbol]
+				_, isNonTerminal := parser._rules[defSymbol]
 				if isNonTerminal {
 
 					//parse code for current definition symbol
@@ -111,7 +126,7 @@ func ParseSymbols(parsedSymbols []TokenLexemePair,
 						// add symbols before match to list, then add the replacement, then add the rest back
 						var updated []TokenLexemePair
 						updated = append(updated, matchedSymbol)
-						indexAfterReplacement := parser.currentDefinitionSymbolCount + 1
+						indexAfterReplacement := parser._currentDefinitionSymbolCount + 1
 						updated = append(updated, parsedSymbols[indexAfterReplacement:]...)
 
 						return ParseSymbols(updated, START, parser)
@@ -121,25 +136,45 @@ func ParseSymbols(parsedSymbols []TokenLexemePair,
 					}
 
 				} else { // definition symbol is terminal and didn't match
-					parser.expectedToken = defSymbol
-					parser.foundToken = currentCodeSymbol.token
+					parser._expectedToken = defSymbol
+					parser._foundToken = currentCodeSymbol.token
 					break // code doens't match this definition, try next
 				}
 
 			}
-			// capture ID values
-			// current symbol matches definition symbol
+			// capture ID values and Operations
 			if currentCodeSymbol.token == ID {
-				parser.nextID = currentCodeSymbol.lexeme
-			}
-			if currentCodeSymbol.token == NUM {
-				parser.nextIdValues = append(parser.nextIdValues, currentCodeSymbol.lexeme)
+				parser._nextID = currentCodeSymbol.lexeme
+				parser._nextOperationArgs = append(parser._nextOperationArgs, currentCodeSymbol.lexeme)
 
-				if len(parser.nextIdValues) > 1 {
-					// if there are two symbols - reset for next id
-					parser.idTable[parser.nextID] = parser.nextIdValues
-					parser.nextIdValues = nil
+				if parser._nextOperation == SQUARE.String() {
+					if len(parser._nextOperationArgs) == 4 {
+						operation := OperationStatement{SQUARE.String(), parser._nextOperationArgs}
+						parser.Operations = append(parser.Operations, operation)
+					}
+				} else if parser._nextOperation == TRIANGLE.String() {
+					if len(parser._nextOperationArgs) == 3 {
+						operation := OperationStatement{TRIANGLE.String(), parser._nextOperationArgs}
+						parser.Operations = append(parser.Operations, operation)
+					}
 				}
+
+				parser._nextIdValues = nil // clear - prepair for next id values
+
+			} else if currentCodeSymbol.token == NUM {
+				parser._nextIdValues = append(parser._nextIdValues, currentCodeSymbol.lexeme)
+				if len(parser._nextIdValues) == 2 {
+					// collected all values - save
+					parser.PointTable[parser._nextID] = parser._nextIdValues
+				}
+
+			} else if currentCodeSymbol.token == SQUARE {
+				parser._nextOperation = SQUARE.String()
+				parser._nextOperationArgs = nil
+
+			} else if currentCodeSymbol.token == TRIANGLE {
+				parser._nextOperation = TRIANGLE.String()
+				parser._nextOperationArgs = nil
 
 			}
 
@@ -148,7 +183,7 @@ func ParseSymbols(parsedSymbols []TokenLexemePair,
 			moreSymbolsInDefinition := defSymbolIndex != len(definition.Symbols)-1
 			if !moreSymbolsInDefinition {
 				derivationFound = true
-				parser.currentDefinitionSymbolCount = defSymbolIndex
+				parser._currentDefinitionSymbolCount = defSymbolIndex
 				break
 			}
 
@@ -165,7 +200,7 @@ func ParseSymbols(parsedSymbols []TokenLexemePair,
 
 		} else if defIndex+1 == len(symbolDefinitions) { // if on the last definition AND no match found
 			if parentSymbol == START { // if failed last definition is START, no more definitions to try -fail
-				return nullToken, true, parser, errors.New("Found " + parser.foundToken.String() + ", expected: " + parser.expectedToken.String())
+				return nullToken, true, parser, errors.New("Found " + parser._foundToken.String() + ", expected: " + parser._expectedToken.String())
 			} else {
 				return nullToken, false, parser, nil
 			}
@@ -173,10 +208,10 @@ func ParseSymbols(parsedSymbols []TokenLexemePair,
 	} // for each definition
 
 	msg := ""
-	if parser.ranOutOfParsedSymbols {
-		msg = "Expected " + parser.expectedToken.String() + " after " + parser.foundToken.String()
+	if parser._ranOutOfParsedSymbols {
+		msg = "Expected " + parser._expectedToken.String() + " after " + parser._foundToken.String()
 	} else {
-		msg = "Found " + parser.foundToken.String() + ", expected: " + parser.expectedToken.String()
+		msg = "Found " + parser._foundToken.String() + ", expected: " + parser._expectedToken.String()
 	}
 	// COULD NOT PARSE ALL OF THE SYMBOLS - SYNTAX ERROR
 	return nullToken, true, parser, errors.New(msg)
@@ -185,7 +220,7 @@ func ParseSymbols(parsedSymbols []TokenLexemePair,
 // Gets the first token from the given symbol's first definition. this is a helper function
 // used by the parser
 func (s SyntaxParser) FindFirstToken(definition GrammarSymbol) GrammarSymbol {
-	thisDefinitionsSymbols, isNonTerminal := s.rules[definition]
+	thisDefinitionsSymbols, isNonTerminal := s._rules[definition]
 
 	if isNonTerminal {
 		return s.FindFirstToken(thisDefinitionsSymbols[0].Symbols[0])
