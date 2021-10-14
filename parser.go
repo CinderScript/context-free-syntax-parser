@@ -70,6 +70,10 @@ func PrintScheme(parser SyntaxParser, filename string) {
 	fmt.Println(";  Generating Scheme Code...")
 	fmt.Println()
 
+	if len(parser.Operations) == 0 {
+		fmt.Println(";  No test operations parsed!")
+	}
+
 	for _, operation := range parser.Operations {
 		fmt.Print("(process-" + strings.ToLower(operation.name) + " ")
 		for i, argument := range operation.arguments {
@@ -97,6 +101,10 @@ func PrintProlog(parser SyntaxParser, filename string) {
 	fmt.Println("    Lexical and Syntax analysis passed")
 	fmt.Println("    Generating Prolog Code...            */")
 	fmt.Println()
+
+	if len(parser.Operations) == 0 {
+		fmt.Println("/*  No test operations parsed!           */")
+	}
 
 	for _, operation := range parser.Operations {
 		fmt.Print("(query(" + strings.ToLower(operation.name) + "(")
