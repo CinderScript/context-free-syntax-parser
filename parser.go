@@ -70,8 +70,8 @@ func PrintScheme(parser SyntaxParser, filename string) {
 	fmt.Println()
 
 	for _, operation := range parser.Operations {
-		fmt.Print("(process " + operation.name + " ")
-		for _, argument := range operation.arguments {
+		fmt.Print("(process-" + operation.name + " ")
+		for i, argument := range operation.arguments {
 
 			// on error - no definition
 			if !IsIdDefined(argument, parser.PointTable) {
@@ -80,7 +80,10 @@ func PrintScheme(parser SyntaxParser, filename string) {
 
 				// print list of points
 			} else {
-				fmt.Print(" (make-point ", parser.PointTable[argument][0]+" "+parser.PointTable[argument][1]+") ")
+				fmt.Print(" (make-point ", parser.PointTable[argument][0]+" "+parser.PointTable[argument][1]+")")
+				if i < len(operation.arguments)-1 {
+					fmt.Print(" ")
+				}
 			}
 		}
 		fmt.Println(")")
