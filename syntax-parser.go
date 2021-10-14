@@ -1,3 +1,6 @@
+// Contains all the code to perform a Top down recursive parse of the given code
+// and the given rules / GrammarSymbol definitions
+
 package main
 
 import (
@@ -5,12 +8,13 @@ import (
 )
 
 type SyntaxParser struct {
-	rules                 map[GrammarSymbol][]SymbolDefinition
-	idTable               map[string]string
-	expectedToken         GrammarSymbol
-	foundToken            GrammarSymbol
-	ranOutOfParsedSymbols bool
-	nextID                GrammarSymbol
+	rules                        map[GrammarSymbol][]SymbolDefinition
+	idTable                      map[string]string
+	expectedToken                GrammarSymbol
+	foundToken                   GrammarSymbol
+	ranOutOfParsedSymbols        bool
+	nextID                       GrammarSymbol
+	currentDefinitionSymbolCount int
 }
 
 func (s SyntaxParser) ParseTokens(codeTokens []TokenLexemePair, rules map[GrammarSymbol][]SymbolDefinition) error {
@@ -26,13 +30,13 @@ func (s SyntaxParser) ParseTokens(codeTokens []TokenLexemePair, rules map[Gramma
 }
 
 func ParseSymbols(parsedSymbols []GrammarSymbol,
-	parentSymbol GrammarSymbol, parser SyntaxParser) ([]GrammarSymbol, bool, SyntaxParser, error) {
+	parentSymbol GrammarSymbol, parser SyntaxParser) (GrammarSymbol, bool, SyntaxParser, error) {
 
 	if len(parsedSymbols) > 0 && parsedSymbols[0] == START {
 		if len(parsedSymbols) > 1 {
-			return parsedSymbols, true, parser, errors.New("Syntax error: found " + string(parsedSymbols[1]) + " after program termination.")
+			return "", true, parser, errors.New("Syntax error: found " + string(parsedSymbols[1]) + " after program termination.")
 		} else {
-			return parsedSymbols, true, parser, nil
+			return "", true, parser, nil
 		}
 	}
 
@@ -75,21 +79,28 @@ func ParseSymbols(parsedSymbols []GrammarSymbol,
 				if isNonTerminal {
 
 					//parse code for current definition symbol
-					updatedSymbols, complete, updatedParser, err := ParseSymbols(parsedSymbols[defSymbolIndex:], defSymbol, parser)
+					matchedSymbol, complete, updatedParser, err := ParseSymbols(parsedSymbols[defSymbolIndex:], defSymbol, parser)
 					parser = updatedParser
 
 					if err != nil {
-						return nil, true, parser, err // propagate caught error to top
+						return "", true, parser, err // propagate caught error to top
 
 					} else if complete {
 						// END CASE - SUCCESS!!!
-						return []GrammarSymbol{START}, true, parser, nil
+						return START, true, parser, nil
 
-					} else if updatedSymbols != nil { // if match was found
-						//Parse the newley parsed symbols from start
-						return ParseSymbols(updatedSymbols, START, parser)
+					} else if matchedSymbol != "" { // if match was found
+						//Add matched symbol to the parse and
 
-					} else if updatedSymbols == nil && !complete && err == nil { // if no derivation was found for definition
+						// add symbols before match to list, then add the replacement, then add the rest back
+						var updated []GrammarSymbol
+						updated = append(updated, matchedSymbol)
+						indexAfterReplacement := parser.currentDefinitionSymbolCount + 1
+						updated = append(updated, parsedSymbols[indexAfterReplacement:]...)
+
+						return ParseSymbols(updated, START, parser)
+
+					} else if matchedSymbol == "" && !complete && err == nil { // if no derivation was found for definition
 						break // try next definition
 					}
 
@@ -111,6 +122,7 @@ func ParseSymbols(parsedSymbols []GrammarSymbol,
 			moreSymbolsInDefinition := defSymbolIndex != len(definition.Symbols)-1
 			if !moreSymbolsInDefinition {
 				derivationFound = true
+				parser.currentDefinitionSymbolCount = defSymbolIndex
 				break
 			}
 
@@ -122,13 +134,13 @@ func ParseSymbols(parsedSymbols []GrammarSymbol,
 			updatedSymbols = append(updatedSymbols, parsedSymbols[replaceCount:]...)
 			isComplete := (len(updatedSymbols) == 1) && (updatedSymbols[0] == START)
 
-			return updatedSymbols, isComplete, parser, nil
+			return parentSymbol, isComplete, parser, nil
 
 		} else if defIndex+1 == len(symbolDefinitions) { // if on the last definition AND no match found
 			if parentSymbol == START { // if failed last definition is START, no more definitions to try -fail
-				return nil, true, parser, errors.New("Found " + parser.foundToken.String() + ", expected: " + parser.expectedToken.String())
+				return "", true, parser, errors.New("Found " + parser.foundToken.String() + ", expected: " + parser.expectedToken.String())
 			} else {
-				return nil, false, parser, nil
+				return "", false, parser, nil
 			}
 		}
 	} // for each definition
@@ -140,7 +152,7 @@ func ParseSymbols(parsedSymbols []GrammarSymbol,
 		msg = "Found " + parser.foundToken.String() + ", expected: " + parser.expectedToken.String()
 	}
 	// COULD NOT PARSE ALL OF THE SYMBOLS - SYNTAX ERROR
-	return nil, true, parser, errors.New(msg)
+	return "", true, parser, errors.New(msg)
 }
 
 // Gets the first token from the given symbol's first definition.

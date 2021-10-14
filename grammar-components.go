@@ -6,27 +6,29 @@ import "strings"
 type GrammarSymbol string
 
 const (
-	POINT      GrammarSymbol = "POINT"
-	ID         GrammarSymbol = "ID"
-	NUM        GrammarSymbol = "NUM"
-	SEMICOLON  GrammarSymbol = "SEMICOLON"
-	COMMA      GrammarSymbol = "COMMA"
-	PERIOD     GrammarSymbol = "PERIOD"
-	LPAREN     GrammarSymbol = "LPAREN"
-	RPAREN     GrammarSymbol = "RPAREN"
-	ASSIGN     GrammarSymbol = "ASSIGN"
-	TRIANGLE   GrammarSymbol = "TRIANGLE"
-	SQUARE     GrammarSymbol = "SQUARE"
-	TEST       GrammarSymbol = "TEST"
-	START      GrammarSymbol = "START"
-	STMT_LIST  GrammarSymbol = "STMT_LIST"
-	STMT       GrammarSymbol = "STMT"
-	POINT_DEF  GrammarSymbol = "POINT_DEF"
-	TEST_POINT GrammarSymbol = "TEST_POINT"
-	OPTION     GrammarSymbol = "OPTION"
-	POINT_LIST GrammarSymbol = "POINT_LIST"
-	LETTER     GrammarSymbol = "LETTER"
-	DIGIT      GrammarSymbol = "DIGIT"
+	POINT         GrammarSymbol = "POINT"
+	ID            GrammarSymbol = "ID"
+	NUM           GrammarSymbol = "NUM"
+	SEMICOLON     GrammarSymbol = "SEMICOLON"
+	COMMA         GrammarSymbol = "COMMA"
+	PERIOD        GrammarSymbol = "PERIOD"
+	LPAREN        GrammarSymbol = "LPAREN"
+	RPAREN        GrammarSymbol = "RPAREN"
+	ASSIGN        GrammarSymbol = "ASSIGN"
+	TRIANGLE      GrammarSymbol = "TRIANGLE"
+	SQUARE        GrammarSymbol = "SQUARE"
+	TEST          GrammarSymbol = "TEST"
+	START         GrammarSymbol = "START"
+	STMT_LIST     GrammarSymbol = "STMT_LIST"
+	STMT          GrammarSymbol = "STMT"
+	POINT_DEF     GrammarSymbol = "POINT_DEF"
+	TEST_SHAPE    GrammarSymbol = "TEST_POINT"
+	OPTION        GrammarSymbol = "OPTION"
+	TEST_SQUARE   GrammarSymbol = "TEST_SQUARE"
+	TEST_TRIANGLE GrammarSymbol = "TEST_TRIANGLE"
+	POINT_LIST    GrammarSymbol = "POINT_LIST"
+	LETTER        GrammarSymbol = "LETTER"
+	DIGIT         GrammarSymbol = "DIGIT"
 )
 
 func (s GrammarSymbol) String() string {
@@ -65,15 +67,30 @@ func GetGrammarRules() map[GrammarSymbol][]SymbolDefinition {
 	// define STMT (2 defs)
 	grammarRules[STMT] = []SymbolDefinition{
 		{[]GrammarSymbol{POINT_DEF}},
-		{[]GrammarSymbol{TEST_POINT}}}
+		{[]GrammarSymbol{TEST_SHAPE}}}
 
 	// define POINT_DEF (1 def)
 	grammarRules[POINT_DEF] = []SymbolDefinition{
 		{[]GrammarSymbol{ID, ASSIGN, POINT, LPAREN, NUM, COMMA, NUM, RPAREN}}}
 
+	// // define TEST_POINT (1 def)
+	// grammarRules[TEST_SHAPE] = []SymbolDefinition{
+	// 	{[]GrammarSymbol{TEST, LPAREN, OPTION, COMMA, POINT_LIST, RPAREN}}}
+
 	// define TEST_POINT (1 def)
-	grammarRules[TEST_POINT] = []SymbolDefinition{
-		{[]GrammarSymbol{TEST, LPAREN, OPTION, COMMA, POINT_LIST, RPAREN}}}
+	grammarRules[TEST_SHAPE] = []SymbolDefinition{
+		{[]GrammarSymbol{TEST_SQUARE}},
+		{[]GrammarSymbol{TEST_TRIANGLE}}}
+
+	// define TEST_SQUARE
+	grammarRules[TEST_SQUARE] = []SymbolDefinition{
+		{[]GrammarSymbol{TEST, LPAREN, SQUARE, COMMA,
+			ID, COMMA, ID, COMMA, ID, COMMA, ID, RPAREN}}}
+
+	// define TEST_TRIANGLE
+	grammarRules[TEST_TRIANGLE] = []SymbolDefinition{
+		{[]GrammarSymbol{TEST, LPAREN, TRIANGLE,
+			COMMA, ID, COMMA, ID, COMMA, ID, RPAREN}}}
 
 	// define OPTION (2 def)
 	grammarRules[OPTION] = []SymbolDefinition{
@@ -83,7 +100,7 @@ func GetGrammarRules() map[GrammarSymbol][]SymbolDefinition {
 	// define POINT_LIST (2 def)
 	grammarRules[POINT_LIST] = []SymbolDefinition{
 		{[]GrammarSymbol{ID}},
-		{[]GrammarSymbol{ID, COMMA, POINT_LIST}}}
+		{[]GrammarSymbol{POINT_LIST, COMMA, POINT_LIST}}}
 
 	//don't need to define NUM or ID - those are found by the lexical scanner
 	return grammarRules

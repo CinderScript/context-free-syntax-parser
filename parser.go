@@ -22,6 +22,8 @@ func main() {
 	if err != nil {
 		fmt.Println(err.Error())
 		os.Exit(3)
+	} else {
+		fmt.Println("No lexical error detected.")
 	}
 
 	var parser SyntaxParser
@@ -29,6 +31,8 @@ func main() {
 	if err != nil {
 		fmt.Println("Syntax Error - " + err.Error())
 		os.Exit(4)
+	} else {
+		fmt.Println("No syntax error detected.")
 	}
 
 }
