@@ -1,2 +1,2 @@
-a = point(2, 3);
+test(triangle, a, b, c).
 

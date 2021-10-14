@@ -25,5 +25,10 @@ func main() {
 	}
 
 	var parser SyntaxParser
-	parser.ParseTokens(tokensLexemePairs, GetGrammarRules())
+	err = parser.ParseTokens(tokensLexemePairs, GetGrammarRules())
+	if err != nil {
+		fmt.Println("Syntax Error - " + err.Error())
+		os.Exit(4)
+	}
+
 }
