@@ -1,3 +1,3 @@
 ichi = point(3, 7);
-test(square,ichi,ichi,ichi,ichi);
+test(square,ichi,ichi,ichi,ichi).
 
