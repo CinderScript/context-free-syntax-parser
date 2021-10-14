@@ -1,3 +1,4 @@
 a = point(1, 2 );
-test(triangle, a, b, c).
+test(triangle, a, b, c);
+b = point(5, 6).
 

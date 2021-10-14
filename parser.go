@@ -27,12 +27,18 @@ func main() {
 	}
 
 	var parser SyntaxParser
-	err = parser.ParseTokens(tokensLexemePairs, GetGrammarRules())
+	parser, err = parser.ParseTokens(tokensLexemePairs, GetGrammarRules())
 	if err != nil {
 		fmt.Println("Syntax Error - " + err.Error())
 		os.Exit(4)
 	} else {
 		fmt.Println("No syntax error detected.")
+
+		fmt.Println("points found:")
+
+		for k, v := range parser.idTable {
+			fmt.Println(k, "= (", v[0], ", ", v[1], ")")
+		}
 	}
 
 }
