@@ -22,6 +22,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strings"
 )
 
 func main() {
@@ -70,7 +71,7 @@ func PrintScheme(parser SyntaxParser, filename string) {
 	fmt.Println()
 
 	for _, operation := range parser.Operations {
-		fmt.Print("(process-" + operation.name + " ")
+		fmt.Print("(process-" + strings.ToLower(operation.name) + " ")
 		for i, argument := range operation.arguments {
 
 			// on error - no definition
@@ -98,7 +99,7 @@ func PrintProlog(parser SyntaxParser, filename string) {
 	fmt.Println()
 
 	for _, operation := range parser.Operations {
-		fmt.Print("(query(" + operation.name + "(")
+		fmt.Print("(query(" + strings.ToLower(operation.name) + "(")
 		for i, argument := range operation.arguments {
 
 			// on error - no definition
@@ -108,7 +109,7 @@ func PrintProlog(parser SyntaxParser, filename string) {
 
 				// print list of points
 			} else {
-				fmt.Print("(point2d(" + parser.PointTable[argument][0] + "," + parser.PointTable[argument][1] + ")")
+				fmt.Print("point2d(" + parser.PointTable[argument][0] + "," + parser.PointTable[argument][1] + ")")
 				if i < len(operation.arguments)-1 {
 					fmt.Print(", ")
 				}
