@@ -1,5 +1,17 @@
-// Contains all the code to perform a Top down recursive parse of the given code
-// and the given rules / GrammarSymbol definitions
+/*
+ * Class:		CSC 3100 - Concepts in Programming Languages
+ * Title:		GO: Lexical and Syntax Analyzer
+ * Purpose:		The purpose of this assignment is to practice the following concepts:
+ * 				Context Free Grammar / BNF
+ *				Lexical Analasys (scanner)
+ *				Syntax Analasys (parser)
+ *
+ * 				syntax-parser.go contains the logic required to perfom a top-down, recursive
+ *				syntax analasys on a given set of Lexical tokens.
+ *
+ * Author:		Maynard, Greg
+ * Date:		10/13/2022
+ */
 
 package main
 
@@ -7,6 +19,7 @@ import (
 	"errors"
 )
 
+// SyntaxParser is a struct that has a method for performing syntax analasys.
 type SyntaxParser struct {
 	rules                        map[GrammarSymbol][]SymbolDefinition
 	idTable                      map[string][]string
@@ -18,6 +31,9 @@ type SyntaxParser struct {
 	currentDefinitionSymbolCount int
 }
 
+// ParseTokens takes in a slice of TokenLexemePairs and then performs a syntax analasys
+// using the given context fre grammar rules.  Returns the SyntaxParser object that has
+// data relating to the analasys, including the identifiers found and the option statements
 func (s SyntaxParser) ParseTokens(codeTokens []TokenLexemePair, rules map[GrammarSymbol][]SymbolDefinition) (SyntaxParser, error) {
 	s.rules = rules
 
@@ -166,7 +182,8 @@ func ParseSymbols(parsedSymbols []TokenLexemePair,
 	return nullToken, true, parser, errors.New(msg)
 }
 
-// Gets the first token from the given symbol's first definition.
+// Gets the first token from the given symbol's first definition. this is a helper function
+// used by the parser
 func (s SyntaxParser) FindFirstToken(definition GrammarSymbol) GrammarSymbol {
 	thisDefinitionsSymbols, isNonTerminal := s.rules[definition]
 

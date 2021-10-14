@@ -1,4 +1,7 @@
-a = point(1, 2 );
-test(triangle, a, b, c);
-b = point(5, 6).
+ichi=point(2,3);
+ni=point(4,1);
+san=point(1,2);
+si=point(0,0);
+test(triangle,ichi,ni,san);
+test(square,ichi,ni,san,si).
 

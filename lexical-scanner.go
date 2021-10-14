@@ -1,3 +1,19 @@
+/*
+ * Class:		CSC 3100 - Concepts in Programming Languages
+ * Title:		GO: Lexical and Syntax Analyzer
+ * Purpose:		The purpose of this assignment is to practice the following concepts:
+ * 				Context Free Grammar / BNF
+ *				Lexical Analasys (scanner)
+ *				Syntax Analasys (parser)
+ *
+ * 				lexical-scanner.go contains the logic required to perfom a lexical analasys
+ *				on a given os file. The lexical scanner produces an array of Token Lexeme pairs
+ *				when finished.
+ *
+ * Author:		Maynard, Greg
+ * Date:		10/13/2022
+ */
+
 package main
 
 import (
@@ -9,8 +25,8 @@ import (
 )
 
 // ScanFileTokens generates a slice of Token Lexeme pairs found
-// in the given file. If a lexical error is found, this application
-// panics with the message "Lexical error [symbol] not recognised"
+// in the given file. If a lexical error is found, the function returns
+// with the given error
 func ScanFileTokens(file *os.File) ([]TokenLexemePair, error) {
 	var tokens []TokenLexemePair // list of each token/lexeme pair found in the file
 

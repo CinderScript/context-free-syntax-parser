@@ -14,7 +14,6 @@
             "program": "${workspaceFolder}",
             "env": {},
             "args": ["test1.cpl", "-s"]
-
         }
     ]
 }

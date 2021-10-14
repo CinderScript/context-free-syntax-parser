@@ -1,6 +1,18 @@
-package main
+/*
+ * Class:		CSC 3100 - Concepts in Programming Languages
+ * Title:		GO: Lexical and Syntax Analyzer
+ * Purpose:		The purpose of this assignment is to practice the following concepts:
+ * 				Context Free Grammar / BNF
+ *				Lexical Analasys (scanner)
+ *				Syntax Analasys (parser)
+ *
+ * 				grammar-components.go contains the elements for defining BNF style grammar rules.
+ *
+ * Author:		Maynard, Greg
+ * Date:		10/13/2022
+ */
 
-import "strings"
+package main
 
 // DEFINES THE POSSIBLE TOKENS OF THE LANGUAGE'S GRAMMAR
 type GrammarSymbol string
@@ -31,6 +43,7 @@ const (
 	DIGIT         GrammarSymbol = "DIGIT"
 )
 
+// returns the string version of the given GrammarSymbol
 func (s GrammarSymbol) String() string {
 	return string(s)
 }
@@ -104,13 +117,4 @@ func GetGrammarRules() map[GrammarSymbol][]SymbolDefinition {
 
 	//don't need to define NUM or ID - those are found by the lexical scanner
 	return grammarRules
-}
-
-func GetDefinitionString(symbols ...GrammarSymbol) string {
-	var symbolList []string
-	for _, s := range symbols {
-		symbolList = append(symbolList, string(s))
-	}
-
-	return strings.Join(symbolList, " ")
 }

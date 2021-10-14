@@ -1,3 +1,21 @@
+/*
+ * Class:		CSC 3100 - Concepts in Programming Languages
+ * Title:		GO: Lexical and Syntax Analyzer
+ * Purpose:		The purpose of this assignment is to practice the following concepts:
+ * 				Context Free Grammar / BNF
+ *				Lexical Analasys (scanner)
+ *				Syntax Analasys (parser)
+ *
+ *				Files: parser.go, syntax-parser.go, lexical-scanner.go, grammar-components.go
+ *
+ * 				parser.go contains the main entry point to this program.  This program
+ *				reads text from a file, then scans and parses the input for errors using
+ *				the grammar rules are defined in the grammar-components.go file.
+ *
+ * Author:		Maynard, Greg
+ * Date:		10/13/2022
+ */
+
 package main
 
 import (
