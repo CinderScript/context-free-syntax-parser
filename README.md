@@ -1,3 +1,14 @@
+Context Free Syntax Parser
+Syntax parser written in GO.  The parser user a set of grammar definitions to parse a file.  The current grammar definition is set to the fictional "four-point" programming language.
+
+<br><br>
+This project is an assignment from the SPU course Concepts in Programming Languages.
+
+<br><br>
+
+
+
+
 # Go Programming Assignment: 4Point Grammar Lexical and Syntax Analysis
 
 
