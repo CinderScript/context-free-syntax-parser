@@ -4,7 +4,7 @@ Syntax parser written in GO.  The parser user a set of grammar definitions to pa
 There are four .go files in this repository.
 * `lexical-scanner.go`: contains functions for creating a lexical token-lexeme pair list from a code file.
 * `syntax-parser.go`: contains functions for parsing the token-lexeme pair list using the specified grammar rules.
-* `crammar-components.go`: contains grammar definitions and list of symbols.
+* `grammar-components.go`: contains grammar definitions and list of symbols.
 * `main.go`: entry point for the program.
 <br>
 #### Program Usage:
