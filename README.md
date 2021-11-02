@@ -1,5 +1,18 @@
-Context Free Syntax Parser
-Syntax parser written in GO.  The parser user a set of grammar definitions to parse a file.  The current grammar definition is set to the fictional "four-point" programming language.
+# Context Free Syntax Parser
+Syntax parser written in GO.  The parser user a set of grammar definitions to parse a file.  The current grammar definition is set to the fictional "four-point" programming language.  This application parses a code file, and then outputs the Scheme or Prolog code to be run by external Scheme and Prolog projects.
+<br>
+There are four .go files in this repository.
+* `lexical-scanner.go`: contains functions for creating a lexical token-lexeme pair list from a code file.
+* `syntax-parser.go`: contains functions for parsing the token-lexeme pair list using the specified grammar rules.
+* `crammar-components.go`: contains grammar definitions and list of symbols.
+* `main.go`: entry point for the program.
+<br>
+#### Program Usage:
+The program takes two command line arguments.  The first is the directory of the input file containing a program written in "four-point" code.  The second argument is either "-s" or "-p" and signals the application to output either Scheme or Prolog code.
+
+`ubuntu:~$ ./Syntax-Parser four-point-program.txt -s`
+`ubuntu:~$ ./Syntax-Parser four-point-program.txt -p`
+
 
 <br><br>
 This project is an assignment from the SPU course Concepts in Programming Languages.
