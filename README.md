@@ -13,14 +13,11 @@ The program takes two command line arguments.  The first is the directory of the
 `ubuntu:~$ ./Syntax-Parser four-point-program.txt -s` <br>
 `ubuntu:~$ ./Syntax-Parser four-point-program.txt -p`
 
-
-<br><br>
-This project is an assignment from the SPU course Concepts in Programming Languages.
-
 <br><br>
 
+This project was an assignment from the SPU course Concepts in Programming Languages.
 
-
+<br><br>
 
 # Go Programming Assignment: 4Point Grammar Lexical and Syntax Analysis
 
