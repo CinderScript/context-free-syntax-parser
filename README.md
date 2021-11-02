@@ -10,7 +10,7 @@ There are four .go files in this repository.
 #### Program Usage:
 The program takes two command line arguments.  The first is the directory of the input file containing a program written in "four-point" code.  The second argument is either "-s" or "-p" and signals the application to output either Scheme or Prolog code.
 
-`ubuntu:~$ ./Syntax-Parser four-point-program.txt -s`
+`ubuntu:~$ ./Syntax-Parser four-point-program.txt -s` <br>
 `ubuntu:~$ ./Syntax-Parser four-point-program.txt -p`
 
 
