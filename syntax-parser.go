@@ -1,5 +1,5 @@
 /*
- * Class:		CSC 3100 - Concepts in Programming Languages
+ * Class:		CSC 3310 - Concepts in Programming Languages
  * Title:		GO: Lexical and Syntax Analyzer
  * Purpose:		The purpose of this assignment is to practice the following concepts:
  * 				Context Free Grammar / BNF
